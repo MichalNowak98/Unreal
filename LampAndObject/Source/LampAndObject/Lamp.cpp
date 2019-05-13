@@ -21,6 +21,9 @@ ALamp::ALamp(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitiali
 	bNetLoadOnClient = true;
 	bAlwaysRelevant = true;
 
+	if (GetWorld())
+		PlayerController = Cast<AMyPlayerController>(GetWorld()->GetFirstPlayerController());
+
 	//if creating of UPointLightComponent was successful
 	if (LightSource)
 	{
@@ -104,9 +107,19 @@ void ALamp::increment_CountRed_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("Client cos robi!"));
 }
 
+bool ALamp::increment_CountRed_Validate()
+{
+	return true;
+}
+
 void ALamp::increment_CountGreen_Implementation()
 {
 	CountGreen++;
+}
+
+bool ALamp::increment_CountGreen_Validate()
+{
+	return true;
 }
 
 void ALamp::increment_CountBlue_Implementation()
@@ -114,9 +127,19 @@ void ALamp::increment_CountBlue_Implementation()
 	CountBlue++;
 }
 
+bool ALamp::increment_CountBlue_Validate()
+{
+	return true;
+}
+
 void ALamp::decrement_CountRed_Implementation()
 {
 	CountRed--;
+}
+
+bool ALamp::decrement_CountRed_Validate()
+{
+	return true;
 }
 
 void ALamp::decrement_CountGreen_Implementation()
@@ -124,9 +147,19 @@ void ALamp::decrement_CountGreen_Implementation()
 	CountGreen--;
 }
 
+bool ALamp::decrement_CountGreen_Validate()
+{
+	return true;
+}
+
 void ALamp::decrement_CountBlue_Implementation()
 {
 	CountBlue--;
+}
+
+bool ALamp::decrement_CountBlue_Validate()
+{
+	return true;
 }
 
 void ALamp::BeginPlay()
@@ -142,37 +175,77 @@ void ALamp::Tick(float DeltaTime)
 	if (TriggerVolumeRed && TriggerVolumeRed->IsOverlappingActor(Player))
 	{
 		if (!TriggerVolumeRedPushed)
+		{
 			increment_CountRed();
+			if (!HasAuthority())
+			{
+				PlayerController->Server_Set_CountRed(CountRed);
+			}
+		}
 		TriggerVolumeRedPushed = true;
 	}
 	else
 	{
 		if (TriggerVolumeRedPushed)
+		{
 			decrement_CountRed();
+			if (!HasAuthority())
+			{
+				PlayerController->Server_Set_CountRed(CountRed);
+			}
+		}
 		TriggerVolumeRedPushed = false;
 	}
 	if (TriggerVolumeGreen && TriggerVolumeGreen->IsOverlappingActor(Player))
 	{
 		if (!TriggerVolumeGreenPushed)
+		{
 			increment_CountGreen();
+			if (!HasAuthority())
+			{
+				PlayerController->Server_Set_CountGreen(CountGreen);
+			}
+		}
+			
 		TriggerVolumeGreenPushed = true;
 	}
 	else
 	{
 		if (TriggerVolumeGreenPushed)
+		{
 			decrement_CountGreen();
+			if (!HasAuthority())
+			{
+				PlayerController->Server_Set_CountGreen(CountGreen);
+			}
+		}
+			
 		TriggerVolumeGreenPushed = false;
 	}
 	if (TriggerVolumeBlue && TriggerVolumeBlue->IsOverlappingActor(Player))
 	{
 		if (!TriggerVolumeBluePushed)
+		{
 			increment_CountBlue();
+			if (!HasAuthority())
+			{
+				PlayerController->Server_Set_CountBlue(CountBlue);
+			}
+		}
+			
 		TriggerVolumeBluePushed = true;
 	}
 	else
 	{
 		if (TriggerVolumeBluePushed)
+		{
 			decrement_CountBlue();
+			if (!HasAuthority())
+			{
+				PlayerController->Server_Set_CountBlue(CountBlue);
+			}
+		}
+			
 		TriggerVolumeBluePushed = false;
 	}
 	if (HasAuthority())
@@ -182,6 +255,12 @@ void ALamp::Tick(float DeltaTime)
 		UE_LOG(LogTemp, Warning, TEXT("CountBlue: %d"), CountBlue);
 	}
 
+	if (HasAuthority())
+	{
+		CountRed = AMyPlayerController::Server_Get_CountRed();
+		CountGreen = AMyPlayerController::Server_Get_CountGreen();
+		CountBlue = AMyPlayerController::Server_Get_CountBlue();
+	}
 	if (CountRed > 0)
 	{
 		Color_on(EColor::Red);
