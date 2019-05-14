@@ -1,38 +1,39 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "MyPlayerController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class LAMPANDOBJECT_API AMyPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	int CountRed;
-	int CountGreen;
-	int CountBlue;
-public:
-	AMyPlayerController();
-	//server functions
-	UFUNCTION(Server, Reliable, WithValidation)
-		void Server_Set_CountRed(const int &_CountRed);
-	void Server_Set_CountRed_Implementation(const int &_CountRed);
-	bool Server_Set_CountRed_Validate(const int &_CountRed);
-	UFUNCTION(Server, Reliable, WithValidation)
-		void Server_Set_CountGreen(const int &_CountGreen);
-	void Server_Set_CountGreen_Implementation(const int &_CountGreen);
-	bool Server_Set_CountGreen_Validate(const int &_CountGreen);
-	UFUNCTION(Server, Reliable, WithValidation)
-		void Server_Set_CountBlue(const int &_CountBlue);
-	void Server_Set_CountBlue_Implementation(const int &_CountBlue);
-	bool Server_Set_CountBlue_Validate(const int &_CountBlue);
 
-	static int Server_Get_CountRed();
-	static int Server_Get_CountGreen();
-	static int Server_Get_CountBlue();
+public:
+	//replication not default?
+	AMyPlayerController(const FObjectInitializer& ObjectInitializer);
+	
+	bool bRed;
+	bool bGreen;
+	bool bBlue;
+	//server set funcions
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Actualize_bRed(const bool Value);
+	void Actualize_bRed_Implementation(const bool Value);
+	bool Actualize_bRed_Validate(const bool Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Actualize_bGreen(const bool Value);
+	void Actualize_bGreen_Implementation(const bool Value);
+	bool Actualize_bGreen_Validate(const bool Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Actualize_bBlue(const bool Value);
+	void Actualize_bBlue_Implementation(const bool Value);
+	bool Actualize_bBlue_Validate(const bool Value);
+
+	//get funtions
+	bool Get_bRed();
+	bool Get_bGreen();
+	bool Get_bBlue();
 };

@@ -2,52 +2,53 @@
 
 #include "MyPlayerController.h"
 
-AMyPlayerController::AMyPlayerController() : APlayerController()
+AMyPlayerController::AMyPlayerController(const FObjectInitializer& ObjectInitializer) : APlayerController(ObjectInitializer)
 {
-	CountRed = CountGreen = CountBlue = 0;
+	bReplicates = true;
+	this->bRed = this->bGreen = this->bBlue = false;
 }
 
-void AMyPlayerController::Server_Set_CountRed_Implementation(const int & _CountRed)
+void AMyPlayerController::Actualize_bRed_Implementation(const bool Value)
 {
-	CountRed = _CountRed;
+	this->bRed = Value;
 }
 
-bool AMyPlayerController::Server_Set_CountRed_Validate(const int & _CountRed)
+bool AMyPlayerController::Actualize_bRed_Validate(const bool Value)
 {
 	return true;
 }
 
-void AMyPlayerController::Server_Set_CountGreen_Implementation(const int & _CountGreen)
+void AMyPlayerController::Actualize_bGreen_Implementation(const bool Value)
 {
-	CountGreen = _CountGreen;
+	this->bGreen = Value;
 }
 
-bool AMyPlayerController::Server_Set_CountGreen_Validate(const int & _CountGreen)
+bool AMyPlayerController::Actualize_bGreen_Validate(const bool Value)
 {
 	return true;
 }
 
-void AMyPlayerController::Server_Set_CountBlue_Implementation(const int & _CountBlue)
+void AMyPlayerController::Actualize_bBlue_Implementation(const bool Value)
 {
-	CountBlue = _CountBlue;
+	this->bBlue = Value;
 }
 
-bool AMyPlayerController::Server_Set_CountBlue_Validate(const int & _CountBlue)
+bool AMyPlayerController::Actualize_bBlue_Validate(const bool Value)
 {
 	return true;
 }
 
-int AMyPlayerController::Server_Get_CountRed()
+bool AMyPlayerController::Get_bBlue()
 {
-	return CountRed;
+	return bBlue;
 }
 
-int AMyPlayerController::Server_Get_CountGreen()
+bool AMyPlayerController::Get_bRed()
 {
-	return CountGreen;
+	return bRed;
 }
 
-int AMyPlayerController::Server_Get_CountBlue()
+bool AMyPlayerController::Get_bGreen()
 {
-	return CountBlue;
+	return bGreen;
 }
