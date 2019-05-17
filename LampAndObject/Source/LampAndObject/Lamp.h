@@ -55,3 +55,5 @@ private:
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* TriggerVolumeBlue;
 };
+
+int ALamp::NextID = 0;
