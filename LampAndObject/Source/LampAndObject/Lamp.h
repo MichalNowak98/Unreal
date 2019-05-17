@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UnrealNetwork.h"
 #include "GameFramework/Actor.h"
 #include "Engine/TriggerVolume.h"
 #include "MyPlayerController.h"
@@ -24,7 +25,7 @@ UCLASS()
 class LAMPANDOBJECT_API ALamp : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:
 	ALamp(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaTime) override;
@@ -34,11 +35,16 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 		void SetLightColor(const FLinearColor& Color);
 	void SetLightColor_Implementation(const FLinearColor& Color);
+
+	static int NextID;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
+
+	UPROPERTY(replicated, VisibleAnywhere)
+		int ID;
 	AActor* Player;
 	AMyPlayerController* PlayerController;
 	class UPointLightComponent* LightSource;

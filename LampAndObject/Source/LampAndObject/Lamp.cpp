@@ -11,12 +11,20 @@ ALamp::ALamp(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializ
 	bNetLoadOnClient = true;
 	bAlwaysRelevant = true;
 
+	ALamp::NextID = 1;
+
 	LightSource = CreateDefaultSubobject<UPointLightComponent>(TEXT("LightSource"));
 	if (LightSource)
 	{
 		LightSource->SetIntensity(5000);
-		LightSource->SetLightColor(FLinearColor(0,0,0,1), true);
+		LightSource->SetLightColor(FLinearColor(0, 0, 0, 1), true);
 	}
+}
+
+void ALamp::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ALamp, ID);
 }
 
 // Called when the game starts or when spawned
@@ -25,6 +33,14 @@ void ALamp::BeginPlay()
 	Super::BeginPlay();
 	Player = GetWorld()->GetFirstPlayerController()->GetPawn();
 	PlayerController = Cast<AMyPlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if (HasAuthority())
+	{
+		FPlatformProcess::Sleep(1);
+		ID = ALamp::NextID;
+		UE_LOG(LogTemp, Warning, TEXT("NextID"), ID);
+		ALamp::NextID++;
+	}
 }
 
 // Called every frame
@@ -33,30 +49,30 @@ void ALamp::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (TriggerVolumeRed && TriggerVolumeRed->IsOverlappingActor(Player) && PlayerController)
 	{
-		PlayerController->Actualize_bRed(true);
+		PlayerController->Actualize_bRed(ID, true);
 	}
 	else
 	{
-		if(PlayerController)
-			PlayerController->Actualize_bRed(false);
+		if (PlayerController)
+			PlayerController->Actualize_bRed(ID, false);
 	}
 	if (TriggerVolumeGreen && TriggerVolumeGreen->IsOverlappingActor(Player) && PlayerController)
 	{
-		PlayerController->Actualize_bGreen(true);
+		PlayerController->Actualize_bGreen(ID, true);
 	}
 	else
 	{
 		if (PlayerController)
-			PlayerController->Actualize_bGreen(false);
+			PlayerController->Actualize_bGreen(ID, false);
 	}
 	if (TriggerVolumeBlue && TriggerVolumeBlue->IsOverlappingActor(Player) && PlayerController)
 	{
-		PlayerController->Actualize_bBlue(true);
+		PlayerController->Actualize_bBlue(ID, true);
 	}
 	else
 	{
 		if (PlayerController)
-			PlayerController->Actualize_bBlue(false);
+			PlayerController->Actualize_bBlue(ID, false);
 	}
 	if (HasAuthority())
 	{
@@ -69,9 +85,9 @@ void ALamp::Tick(float DeltaTime)
 			if (Iterator->IsValid())
 			{
 				AMyPlayerController *temp = Cast<AMyPlayerController>(Iterator->Get());
-				CountRed += temp->Get_bRed();
-				CountGreen += temp->Get_bGreen();
-				CountBlue += temp->Get_bBlue();
+				CountRed += temp->Get_bRed(ID);
+				CountGreen += temp->Get_bGreen(ID);
+				CountBlue += temp->Get_bBlue(ID);
 			}
 		}
 		//if Count is bigger then zero, set 1 in according channel
