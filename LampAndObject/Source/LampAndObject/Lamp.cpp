@@ -38,7 +38,7 @@ void ALamp::TriggerRedOn(UPrimitiveComponent* OverlappedComponent, AActor* Other
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Actualize_bRed(ID, true);
+		PlayerController->Set_bColorRed(ID, true);
 	}
 }
 
@@ -46,7 +46,7 @@ void ALamp::TriggerGreenOn(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Actualize_bGreen(ID, true);
+		PlayerController->Set_bColorGreen(ID, true);
 	}
 }
 
@@ -54,7 +54,7 @@ void ALamp::TriggerBlueOn(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Actualize_bBlue(ID, true);
+		PlayerController->Set_bColorBlue(ID, true);
 	}
 }
 
@@ -62,7 +62,7 @@ void ALamp::TriggerRedOff(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Actualize_bRed(ID, false);
+		PlayerController->Set_bColorRed(ID, false);
 	}
 }
 
@@ -70,7 +70,7 @@ void ALamp::TriggerGreenOff(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Actualize_bGreen(ID, false);
+		PlayerController->Set_bColorGreen(ID, false);
 	}
 }
 
@@ -78,7 +78,7 @@ void ALamp::TriggerBlueOff(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Actualize_bBlue(ID, false);
+		PlayerController->Set_bColorBlue(ID, false);
 	}
 }
 
@@ -107,10 +107,12 @@ void ALamp::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (HasAuthority())
 	{
+		//only server need this variables
 		int CountRed = 0;
 		int CountGreen = 0;
 		int CountBlue = 0;
 		FLinearColor Color;
+
 		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 		{
 			if (Iterator->IsValid())

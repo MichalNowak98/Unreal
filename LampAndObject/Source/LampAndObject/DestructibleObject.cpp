@@ -29,7 +29,7 @@ void ADestructibleObject::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 	DOREPLIFETIME(ADestructibleObject, ID);
 	//DOREPLIFETIME(ADestructibleObject, IsDestroyed);
 	DOREPLIFETIME(ADestructibleObject, CurrentHealth); 
-	DOREPLIFETIME(ADestructibleObject, ImpulseDir);
+	DOREPLIFETIME(ADestructibleObject, DestructorImpulseDir);
 }
 
 
@@ -44,7 +44,7 @@ void ADestructibleObject::BeginPlay()
 	if (IsDestroyed)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Should be destoryed on start"));
-		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), ImpulseDir, DefaultImpulse);
+		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), DestructorImpulseDir, DefaultImpulse);
 	}
 	else
 		CurrentHealth = MaxHealth;
@@ -72,18 +72,18 @@ void ADestructibleObject::Tick(float DeltaTime)
 				CountOfDestroyedObject += temp->Get_bIsIsDestroyed(ID);
 				if (temp->Get_bIsIsDestroyed(ID))
 				{	//direction of destructor. Every Client gets similar explosion
-					ImpulseDir = temp->GetPawn()->GetActorForwardVector();
+					DestructorImpulseDir = temp->GetPawn()->GetActorForwardVector();
 				}
 			}
 		}
 		if (CountOfDestroyedObject > 0)
 		{
-			Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), ImpulseDir, DefaultImpulse);
+			Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), DestructorImpulseDir, DefaultImpulse);
 		}
 	}
 	else
 	{
-		PlayerController->Actualize_bDestructibleObject(ID, IsDestroyed);
+		PlayerController->Set_bDestructibleObject(ID, IsDestroyed);
 	}
 }
 
@@ -91,8 +91,8 @@ void ADestructibleObject::Trigger(UPrimitiveComponent* OverlappedComponent, AAct
 {
 	if (!IsDestroyed && DestructibleComponent && OtherActor == Player)
 	{
-		ImpulseDir = OtherActor->GetActorForwardVector();
-		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), ImpulseDir, DefaultImpulse);
+		DestructorImpulseDir = OtherActor->GetActorForwardVector();
+		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), DestructorImpulseDir, DefaultImpulse);
 	}
 }
 

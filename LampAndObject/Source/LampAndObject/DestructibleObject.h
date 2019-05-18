@@ -19,27 +19,31 @@ class LAMPANDOBJECT_API ADestructibleObject : public AActor
 public:	
 	ADestructibleObject(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaTime) override;
-	UFUNCTION()
-		void Trigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION(NetMulticast, Reliable)
-		void Destroy(const float Damage, const FVector HitLocation, const FVector ImpulseDir, const float Impulse);
+	
 	UPROPERTY(EditAnywhere)
 		class UDestructibleComponent* DestructibleComponent;
+
 	static int NextID;
 protected:
 	virtual void BeginPlay() override;
+	//callback for overlaping
+	UFUNCTION()
+		void Trigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	//destroys DestructibleComponent on server and all clients
+	UFUNCTION(NetMulticast, Reliable)
+		void Destroy(const float Damage, const FVector HitLocation, const FVector ImpulseDir, const float Impulse);
 
-private:
+	///variales///
 	AMyPlayerController* PlayerController;
 	AActor* Player;
 
 	UPROPERTY(VisibleAnywhere)
 		class UBoxComponent* TriggerComponent;
-
 	UPROPERTY(replicated, VisibleAnywhere)
 		int ID;
+	//stores direction of original destroyed object, so destruction could be as similar on all clients as possible
 	UPROPERTY(replicated, VisibleAnywhere)
-		FVector ImpulseDir;
+		FVector DestructorImpulseDir;
 	UPROPERTY(replicated, VisibleAnywhere)
 		bool IsDestroyed;
 	UPROPERTY(VisibleAnywhere)

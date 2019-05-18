@@ -8,83 +8,72 @@ AMyPlayerController::AMyPlayerController(const FObjectInitializer& ObjectInitial
 }
 
 
-void AMyPlayerController::Actualize_bRed_Implementation(const int ID, const bool Value)
+void AMyPlayerController::Set_bColorRed_Implementation(const int ID, const bool Value)
 {
 	if (Lamps.Contains(ID))
 	{
-		this->Lamps[ID].bRed = Value;
+		this->Lamps[ID].bRedOn = Value;
 	}
 	else
 	{
 		ColorCh temp;
-		temp.bRed = Value;
-		temp.bGreen = false;
-		temp.bBlue = false;
+		temp.bRedOn = Value;
+		temp.bGreenOn = false;
+		temp.bBlueOn = false;
 		this->Lamps.Add(ID, temp);
 	}
 }
 
-bool AMyPlayerController::Actualize_bRed_Validate(const int ID, const bool Value)
+bool AMyPlayerController::Set_bColorRed_Validate(const int ID, const bool Value)
 {
 	return true;
 }
 
-void AMyPlayerController::Actualize_bGreen_Implementation(const int ID, const bool Value)
+void AMyPlayerController::Set_bColorGreen_Implementation(const int ID, const bool Value)
 {
 	if (Lamps.Contains(ID))
 	{
-		this->Lamps[ID].bGreen = Value;
+		this->Lamps[ID].bGreenOn = Value;
 	}
 	else
 	{
 		ColorCh temp;
-		temp.bRed = false;
-		temp.bGreen = Value;
-		temp.bBlue = false;
+		temp.bRedOn = false;
+		temp.bGreenOn = Value;
+		temp.bBlueOn = false;
 		this->Lamps.Add(ID, temp);
 	}
 }
 
-bool AMyPlayerController::Actualize_bGreen_Validate(const int ID, const bool Value)
+bool AMyPlayerController::Set_bColorGreen_Validate(const int ID, const bool Value)
 {
 	return true;
 }
 
-void AMyPlayerController::Actualize_bBlue_Implementation(const int ID, const bool Value)
+void AMyPlayerController::Set_bColorBlue_Implementation(const int ID, const bool Value)
 {
 	if (Lamps.Contains(ID))
 	{
-		this->Lamps[ID].bBlue = Value;
+		this->Lamps[ID].bBlueOn = Value;
 	}
 	else
 	{
 		ColorCh temp;
-		temp.bRed = false;
-		temp.bGreen = false;
-		temp.bBlue = Value;
+		temp.bRedOn = false;
+		temp.bGreenOn = false;
+		temp.bBlueOn = Value;
 		this->Lamps.Add(ID, temp);
 	}
 }
 
-bool AMyPlayerController::Actualize_bBlue_Validate(const int ID, const bool Value)
+bool AMyPlayerController::Set_bColorBlue_Validate(const int ID, const bool Value)
 {
 	return true;
 }
 
-bool AMyPlayerController::Get_bBlue(const int ID)
-{
-	if (Lamps.Contains(ID))
-	{
-		return Lamps[ID].bBlue;
-	}
-	else
-	{
-		return false;
-	}
-}
 
 
-void AMyPlayerController::Actualize_bDestructibleObject_Implementation(const int ID, const bool Value)
+void AMyPlayerController::Set_bDestructibleObject_Implementation(const int ID, const bool Value)
 {
 	if (DestructibleObjects.Contains(ID))
 	{
@@ -93,7 +82,7 @@ void AMyPlayerController::Actualize_bDestructibleObject_Implementation(const int
 	this->DestructibleObjects.Add(ID, Value);
 }
 
-bool AMyPlayerController::Actualize_bDestructibleObject_Validate(const int ID, const bool Value)
+bool AMyPlayerController::Set_bDestructibleObject_Validate(const int ID, const bool Value)
 {
 	return true;
 }
@@ -102,7 +91,7 @@ bool AMyPlayerController::Get_bRed(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{
-		return Lamps[ID].bRed;
+		return Lamps[ID].bRedOn;
 	}
 	else
 	{
@@ -114,7 +103,19 @@ bool AMyPlayerController::Get_bGreen(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{
-		return Lamps[ID].bGreen;
+		return Lamps[ID].bGreenOn;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool AMyPlayerController::Get_bBlue(const int ID)
+{
+	if (Lamps.Contains(ID))
+	{
+		return Lamps[ID].bBlueOn;
 	}
 	else
 	{

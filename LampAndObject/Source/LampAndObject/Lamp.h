@@ -1,7 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
-
 #include "CoreMinimal.h"
 #include "UnrealNetwork.h"
 #include "GameFramework/Actor.h"
@@ -30,13 +27,22 @@ public:
 	ALamp(const FObjectInitializer& ObjectInitializer);
 	virtual void Tick(float DeltaTime) override;
 
+	//ID for next lamp (given at BeginPlay)
+	static int NextID;	
+
+protected:
+	virtual void BeginPlay() override;
+	//sets channel represened by EColor to 1
 	void Color_on(EColor Ecolor, FLinearColor& Color);
+	//sets channel represened by EColor to 0
 	void Color_off(EColor Ecolor, FLinearColor& Color);
+	//sets color on server and all clients
 	UFUNCTION(NetMulticast, Reliable)
 		void SetLightColor(const FLinearColor& Color);
 	void SetLightColor_Implementation(const FLinearColor& Color);
 
-	static int NextID;
+
+	//callbacks, set color on and off depending on UBoxComponents delegate callbacks
 	UFUNCTION()
 		void TriggerRedOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
@@ -50,24 +56,21 @@ public:
 	UFUNCTION()
 		void TriggerBlueOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-private:
-
+	///variables///
 	UPROPERTY(replicated, VisibleAnywhere)
 		int ID;
 	AActor* Player;
 	AMyPlayerController* PlayerController;
-	class UPointLightComponent* LightSource;
-	UPROPERTY(EditAnywhere)
-		class UBoxComponent* TriggerVolumeRed;
-	UPROPERTY(EditAnywhere)
-		class UBoxComponent* TriggerVolumeGreen;
-	UPROPERTY(EditAnywhere)
-		class UBoxComponent* TriggerVolumeBlue;
+	UPointLightComponent* LightSource;
+
+private:
+
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* TriggerVolumeRed;
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* TriggerVolumeGreen;
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* TriggerVolumeBlue;
 };
 
 int ALamp::NextID = 0;
