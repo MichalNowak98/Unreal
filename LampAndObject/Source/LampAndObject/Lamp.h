@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UnrealNetwork.h"
 #include "GameFramework/Actor.h"
-#include "Engine/TriggerVolume.h"
+#include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "MyPlayerController.h"
 #include "Runtime/Engine/Classes/Components/PointLightComponent.h"
 #include "Runtime/Core/Public/Math/Color.h"
@@ -37,6 +37,20 @@ public:
 	void SetLightColor_Implementation(const FLinearColor& Color);
 
 	static int NextID;
+	UFUNCTION()
+		void TriggerRedOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void TriggerGreenOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void TriggerBlueOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void TriggerRedOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+		void TriggerGreenOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+		void TriggerBlueOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,11 +63,11 @@ private:
 	AMyPlayerController* PlayerController;
 	class UPointLightComponent* LightSource;
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume* TriggerVolumeRed;
+		class UBoxComponent* TriggerVolumeRed;
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume* TriggerVolumeGreen;
+		class UBoxComponent* TriggerVolumeGreen;
 	UPROPERTY(EditAnywhere)
-		ATriggerVolume* TriggerVolumeBlue;
+		class UBoxComponent* TriggerVolumeBlue;
 };
 
 int ALamp::NextID = 0;

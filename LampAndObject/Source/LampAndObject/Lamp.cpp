@@ -12,8 +12,15 @@ ALamp::ALamp(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializ
 	bAlwaysRelevant = true;
 
 	ALamp::NextID = 1;
-
 	LightSource = CreateDefaultSubobject<UPointLightComponent>(TEXT("LightSource"));
+
+	TriggerVolumeRed = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component Red"));
+	TriggerVolumeGreen = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component Green"));
+	TriggerVolumeBlue = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component Blue"));
+	TriggerVolumeRed->SetupAttachment(LightSource);
+	TriggerVolumeGreen->SetupAttachment(LightSource);
+	TriggerVolumeBlue->SetupAttachment(LightSource);
+
 	if (LightSource)
 	{
 		LightSource->SetIntensity(5000);
@@ -27,6 +34,54 @@ void ALamp::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeP
 	DOREPLIFETIME(ALamp, ID);
 }
 
+void ALamp::TriggerRedOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == Player && PlayerController)
+	{
+		PlayerController->Actualize_bRed(ID, true);
+	}
+}
+
+void ALamp::TriggerGreenOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == Player && PlayerController)
+	{
+		PlayerController->Actualize_bGreen(ID, true);
+	}
+}
+
+void ALamp::TriggerBlueOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == Player && PlayerController)
+	{
+		PlayerController->Actualize_bBlue(ID, true);
+	}
+}
+
+void ALamp::TriggerRedOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor == Player && PlayerController)
+	{
+		PlayerController->Actualize_bRed(ID, false);
+	}
+}
+
+void ALamp::TriggerGreenOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor == Player && PlayerController)
+	{
+		PlayerController->Actualize_bGreen(ID, false);
+	}
+}
+
+void ALamp::TriggerBlueOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor == Player && PlayerController)
+	{
+		PlayerController->Actualize_bBlue(ID, false);
+	}
+}
+
 // Called when the game starts or when spawned
 void ALamp::BeginPlay()
 {
@@ -38,39 +93,18 @@ void ALamp::BeginPlay()
 		ID = ALamp::NextID;
 		ALamp::NextID++;
 	}
+	TriggerVolumeRed->OnComponentBeginOverlap.AddDynamic(this, &ALamp::TriggerRedOn);
+	TriggerVolumeGreen->OnComponentBeginOverlap.AddDynamic(this, &ALamp::TriggerGreenOn);
+	TriggerVolumeBlue->OnComponentBeginOverlap.AddDynamic(this, &ALamp::TriggerBlueOn);
+	TriggerVolumeRed->OnComponentEndOverlap.AddDynamic(this, &ALamp::TriggerRedOff);
+	TriggerVolumeGreen->OnComponentEndOverlap.AddDynamic(this, &ALamp::TriggerGreenOff);
+	TriggerVolumeBlue->OnComponentEndOverlap.AddDynamic(this, &ALamp::TriggerBlueOff);
 }
 
 // Called every frame
 void ALamp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (TriggerVolumeRed && TriggerVolumeRed->IsOverlappingActor(Player) && PlayerController)
-	{
-		PlayerController->Actualize_bRed(ID, true);
-	}
-	else
-	{
-		if (PlayerController)
-			PlayerController->Actualize_bRed(ID, false);
-	}
-	if (TriggerVolumeGreen && TriggerVolumeGreen->IsOverlappingActor(Player) && PlayerController)
-	{
-		PlayerController->Actualize_bGreen(ID, true);
-	}
-	else
-	{
-		if (PlayerController)
-			PlayerController->Actualize_bGreen(ID, false);
-	}
-	if (TriggerVolumeBlue && TriggerVolumeBlue->IsOverlappingActor(Player) && PlayerController)
-	{
-		PlayerController->Actualize_bBlue(ID, true);
-	}
-	else
-	{
-		if (PlayerController)
-			PlayerController->Actualize_bBlue(ID, false);
-	}
 	if (HasAuthority())
 	{
 		int CountRed = 0;
