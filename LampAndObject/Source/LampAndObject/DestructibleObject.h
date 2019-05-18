@@ -19,8 +19,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
 		void Trigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION()
-		void Destroy(float Damage, FVector HitLocation, FVector ImpulseDir, float Impulse);
+	UFUNCTION(NetMulticast, Reliable)
+		void Destroy(const float Damage, const FVector HitLocation, const FVector ImpulseDir, const float Impulse);
 	UPROPERTY(EditAnywhere)
 		class UDestructibleComponent* DestructibleComponent;
 protected:

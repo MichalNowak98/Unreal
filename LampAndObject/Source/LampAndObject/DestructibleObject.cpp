@@ -13,6 +13,8 @@ ADestructibleObject::ADestructibleObject()
 	TriggerComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component"));
 	TriggerComponent->SetupAttachment(RootComponent);
 
+	bReplicates = true;
+	bAlwaysRelevant = true;
 
 	IsDestroyed = false;
 	MaxHealth = 10.f;
@@ -49,7 +51,7 @@ void ADestructibleObject::Trigger(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
-void ADestructibleObject::Destroy(float Damage, FVector HitLocation, FVector ImpulseDir, float Impulse)
+void ADestructibleObject::Destroy_Implementation(const float Damage, const FVector HitLocation, const FVector ImpulseDir, const float Impulse)
 {
 	if (!IsDestroyed)
 	{
