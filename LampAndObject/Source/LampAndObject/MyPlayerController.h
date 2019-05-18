@@ -21,6 +21,7 @@ public:
 	AMyPlayerController(const FObjectInitializer& ObjectInitializer);
 
 	TMap<int, ColorCh> Lamps;
+	TMap<int, bool> DestructibleObjects;
 
 	//server set funcions
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -38,8 +39,13 @@ public:
 	void Actualize_bBlue_Implementation(const int ID, const bool Value);
 	bool Actualize_bBlue_Validate(const int ID, const bool Value);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+		void Actualize_bDestructibleObject(const int ID, const bool Value);
+	void Actualize_bDestructibleObject_Implementation(const int ID, const bool Value);
+	bool Actualize_bDestructibleObject_Validate(const int ID, const bool Value);
 	//get funtions
 	bool Get_bRed(const int ID);
 	bool Get_bGreen(const int ID);
 	bool Get_bBlue(const int ID);
+	bool Get_bIsIsDestroyed(const int ID);
 };

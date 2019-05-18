@@ -21,7 +21,7 @@ ALamp::ALamp(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializ
 	}
 }
 
-void ALamp::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+void ALamp::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ALamp, ID);
@@ -33,12 +33,9 @@ void ALamp::BeginPlay()
 	Super::BeginPlay();
 	Player = GetWorld()->GetFirstPlayerController()->GetPawn();
 	PlayerController = Cast<AMyPlayerController>(GetWorld()->GetFirstPlayerController());
-
 	if (HasAuthority())
 	{
-		FPlatformProcess::Sleep(1);
 		ID = ALamp::NextID;
-		UE_LOG(LogTemp, Warning, TEXT("NextID"), ID);
 		ALamp::NextID++;
 	}
 }
@@ -84,7 +81,7 @@ void ALamp::Tick(float DeltaTime)
 		{
 			if (Iterator->IsValid())
 			{
-				AMyPlayerController *temp = Cast<AMyPlayerController>(Iterator->Get());
+				AMyPlayerController* temp = Cast<AMyPlayerController>(Iterator->Get());
 				CountRed += temp->Get_bRed(ID);
 				CountGreen += temp->Get_bGreen(ID);
 				CountBlue += temp->Get_bBlue(ID);
@@ -165,7 +162,7 @@ void ALamp::Color_off(EColor Ecolor, FLinearColor& Color)
 
 }
 
-void ALamp::SetLightColor_Implementation(const FLinearColor & Color)
+void ALamp::SetLightColor_Implementation(const FLinearColor& Color)
 {
 	LightSource->SetLightColor(Color);
 }

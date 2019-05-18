@@ -3,10 +3,8 @@
 
 #include "DestructibleObject.h"
 
-// Sets default values
-ADestructibleObject::ADestructibleObject()
+ADestructibleObject::ADestructibleObject(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
@@ -16,38 +14,85 @@ ADestructibleObject::ADestructibleObject()
 	bReplicates = true;
 	bAlwaysRelevant = true;
 
+	ADestructibleObject::NextID = 1;
+
 	IsDestroyed = false;
 	MaxHealth = 10.f;
 	DefaultDamage = 10.f;
 	DefaultImpulse = 10.f;
 }
 
-// Called when the game starts or when spawned
+
+void ADestructibleObject::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ADestructibleObject, ID);
+	//DOREPLIFETIME(ADestructibleObject, IsDestroyed);
+	DOREPLIFETIME(ADestructibleObject, CurrentHealth); 
+	DOREPLIFETIME(ADestructibleObject, ImpulseDir);
+}
+
+
 void ADestructibleObject::BeginPlay()
 {
 	Super::BeginPlay();
 	if (DestructibleComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("there is something to destroy"));
 		DestructibleComponent->SetNotifyRigidBodyCollision(true);
 	}
 	TriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ADestructibleObject::Trigger);
-	CurrentHealth = MaxHealth;
+	if (IsDestroyed)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Should be destoryed on start"));
+		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), ImpulseDir, DefaultImpulse);
+	}
+	else
+		CurrentHealth = MaxHealth;
+	if (HasAuthority())
+	{
+		ID = ADestructibleObject::NextID;
+		ADestructibleObject::NextID++;
+	}
+	PlayerController = Cast<AMyPlayerController>(GetWorld()->GetFirstPlayerController());
+	Player = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 // Called every frame
 void ADestructibleObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Player = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (HasAuthority())
+	{
+		int CountOfDestroyedObject = 0;
+		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		{
+			if (Iterator->IsValid())
+			{
+				AMyPlayerController* temp = Cast<AMyPlayerController>(Iterator->Get());
+				CountOfDestroyedObject += temp->Get_bIsIsDestroyed(ID);
+				if (temp->Get_bIsIsDestroyed(ID))
+				{	//direction of destructor. Every Client gets similar explosion
+					ImpulseDir = temp->GetPawn()->GetActorForwardVector();
+				}
+			}
+		}
+		if (CountOfDestroyedObject > 0)
+		{
+			Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), ImpulseDir, DefaultImpulse);
+		}
+	}
+	else
+	{
+		PlayerController->Actualize_bDestructibleObject(ID, IsDestroyed);
+	}
 }
 
 void ADestructibleObject::Trigger(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!IsDestroyed && DestructibleComponent && OtherActor == Player)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Trigger worked"));
-		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), OtherActor->GetActorForwardVector(), DefaultImpulse);
+		ImpulseDir = OtherActor->GetActorForwardVector();
+		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), ImpulseDir, DefaultImpulse);
 	}
 }
 
@@ -56,7 +101,7 @@ void ADestructibleObject::Destroy_Implementation(const float Damage, const FVect
 	if (!IsDestroyed)
 	{
 		IsDestroyed = true;
-		UE_LOG(LogTemp, Warning, TEXT("Destruction worked"));
+		CurrentHealth = 0;
 		DestructibleComponent->ApplyDamage(Damage, HitLocation, ImpulseDir, Impulse);
 	}
 }
