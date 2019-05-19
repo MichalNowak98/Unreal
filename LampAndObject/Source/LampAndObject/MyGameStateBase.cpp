@@ -7,15 +7,22 @@ void AMyGameStateBase::Set_bColorRed_Implementation(const int ID, const bool Val
 {
 	if (Lamps.Contains(ID))
 	{
-		this->Lamps[ID].bRedOn = Value;
+		if(Value)
+			Lamps[ID].CountRedOn++;
+		else
+			Lamps[ID].CountRedOn--;
 	}
 	else
 	{
-		ColorCh temp;
-		temp.bRedOn = Value;
-		temp.bGreenOn = false;
-		temp.bBlueOn = false;
-		this->Lamps.Add(ID, temp);
+		LampData temp;
+		if (Value)
+			temp.CountRedOn = 1;
+		else
+			temp.CountRedOn = 0;
+		temp.CountGreenOn = 0;
+		temp.CountBlueOn = 0;
+		temp.bToggleSwitch = true;
+		Lamps.Add(ID, temp);
 	}
 }
 
@@ -28,15 +35,22 @@ void AMyGameStateBase::Set_bColorGreen_Implementation(const int ID, const bool V
 {
 	if (Lamps.Contains(ID))
 	{
-		this->Lamps[ID].bGreenOn = Value;
+		if (Value)
+			Lamps[ID].CountGreenOn++;
+		else
+			Lamps[ID].CountGreenOn--;
 	}
 	else
 	{
-		ColorCh temp;
-		temp.bRedOn = false;
-		temp.bGreenOn = Value;
-		temp.bBlueOn = false;
-		this->Lamps.Add(ID, temp);
+		LampData temp;
+		temp.CountRedOn = 0;
+		if (Value)
+			temp.CountGreenOn = 1;
+		else
+			temp.CountGreenOn = 0;
+		temp.CountBlueOn = 0;
+		temp.bToggleSwitch = true;
+		Lamps.Add(ID, temp);
 	}
 }
 
@@ -49,15 +63,22 @@ void AMyGameStateBase::Set_bColorBlue_Implementation(const int ID, const bool Va
 {
 	if (Lamps.Contains(ID))
 	{
-		this->Lamps[ID].bBlueOn = Value;
+		if (Value)
+			Lamps[ID].CountBlueOn++;
+		else
+			Lamps[ID].CountBlueOn--;
 	}
 	else
 	{
-		ColorCh temp;
-		temp.bRedOn = false;
-		temp.bGreenOn = false;
-		temp.bBlueOn = Value;
-		this->Lamps.Add(ID, temp);
+		LampData temp;
+		temp.CountRedOn = 0;
+		temp.CountGreenOn = 0;
+		if (Value)
+			temp.CountBlueOn = 1;
+		else
+			temp.CountBlueOn = 0;
+		temp.bToggleSwitch = true;
+		Lamps.Add(ID, temp);
 	}
 }
 
@@ -68,13 +89,35 @@ bool AMyGameStateBase::Set_bColorBlue_Validate(const int ID, const bool Value)
 
 
 
+void AMyGameStateBase::Set_bToggleSwitch_Implementation(const int ID, const bool Value)
+{
+	if (Lamps.Contains(ID))
+	{
+		Lamps[ID].bToggleSwitch = Value;
+	}
+	else
+	{
+		LampData temp;
+		temp.CountRedOn = 0;
+		temp.CountGreenOn = 0;
+		temp.CountBlueOn = 0;
+		temp.bToggleSwitch = Value;
+		Lamps.Add(ID, temp);
+	}
+}
+
+bool AMyGameStateBase::Set_bToggleSwitch_Validate(const int ID, const bool Value)
+{
+	return true;
+}
+
 void AMyGameStateBase::Set_bDestructibleObject_Implementation(const int ID, const bool Value)
 {
 	if (DestructibleObjects.Contains(ID))
 	{
-		this->DestructibleObjects[ID] = Value;
+		DestructibleObjects[ID] = Value;
 	}
-	this->DestructibleObjects.Add(ID, Value);
+	DestructibleObjects.Add(ID, Value);
 }
 
 bool AMyGameStateBase::Set_bDestructibleObject_Validate(const int ID, const bool Value)
@@ -82,39 +125,51 @@ bool AMyGameStateBase::Set_bDestructibleObject_Validate(const int ID, const bool
 	return true;
 }
 
-bool AMyGameStateBase::Get_bRed(const int ID)
+int AMyGameStateBase::Get_bRed(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{
-		return Lamps[ID].bRedOn;
+		return Lamps[ID].CountRedOn;
 	}
 	else
 	{
-		return false;
+		return 0;
 	}
 }
 
-bool AMyGameStateBase::Get_bGreen(const int ID)
+int AMyGameStateBase::Get_bGreen(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{
-		return Lamps[ID].bGreenOn;
+		return Lamps[ID].CountGreenOn;
 	}
 	else
 	{
-		return false;
+		return 0;
 	}
 }
 
-bool AMyGameStateBase::Get_bBlue(const int ID)
+int AMyGameStateBase::Get_bBlue(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{
-		return Lamps[ID].bBlueOn;
+		return Lamps[ID].CountBlueOn;
 	}
 	else
 	{
-		return false;
+		return 0;
+	}
+}
+
+bool AMyGameStateBase::Get_bToggleSwitch(const int ID)
+{
+	if (Lamps.Contains(ID))
+	{
+		return Lamps[ID].bToggleSwitch;
+	}
+	else
+	{
+		return true;
 	}
 }
 

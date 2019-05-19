@@ -6,11 +6,12 @@
 #include "GameFramework/GameStateBase.h"
 #include "MyGameStateBase.generated.h"
 
-struct ColorCh
+struct LampData
 {
-	bool bRedOn;
-	bool bGreenOn;
-	bool bBlueOn;
+	int CountRedOn;
+	int CountGreenOn;
+	int CountBlueOn;
+	bool bToggleSwitch;
 };
 
 UCLASS()
@@ -18,7 +19,7 @@ class LAMPANDOBJECT_API AMyGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
 private:
-	TMap<int, ColorCh> Lamps;
+	TMap<int, LampData> Lamps;
 	TMap<int, bool> DestructibleObjects;
 public:
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -37,13 +38,19 @@ public:
 	bool Set_bColorBlue_Validate(const int ID, const bool Value);
 
 	UFUNCTION(Server, Reliable, WithValidation)
+		void Set_bToggleSwitch(const int ID, const bool Value);
+	void Set_bToggleSwitch_Implementation(const int ID, const bool Value);
+	bool Set_bToggleSwitch_Validate(const int ID, const bool Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
 		void Set_bDestructibleObject(const int ID, const bool Value);
 	void Set_bDestructibleObject_Implementation(const int ID, const bool Value);
 	bool Set_bDestructibleObject_Validate(const int ID, const bool Value);
 	
 	//get funtions
-	bool Get_bRed(const int ID);
-	bool Get_bGreen(const int ID);
-	bool Get_bBlue(const int ID);
+	int Get_bRed(const int ID);
+	int Get_bGreen(const int ID);
+	int Get_bBlue(const int ID);
+	bool Get_bToggleSwitch(const int ID);
 	bool Get_bIsIsDestroyed(const int ID);
 };

@@ -41,7 +41,10 @@ protected:
 		void SetLightColor(const FLinearColor& Color);
 	void SetLightColor_Implementation(const FLinearColor& Color);
 
-
+	UFUNCTION(NetMulticast, Reliable)
+		void ToggleLamp();
+	void ToggleLamp_Implementation();
+	
 	//callbacks, set color on and off depending on UBoxComponents delegate callbacks
 	UFUNCTION()
 		void TriggerRedOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -55,6 +58,8 @@ protected:
 		void TriggerGreenOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 		void TriggerBlueOff(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION()
+		void ToggleSwitchCallback(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	///variables///
 	UPROPERTY(replicated, VisibleAnywhere)
@@ -71,6 +76,10 @@ private:
 		UBoxComponent* TriggerVolumeGreen;
 	UPROPERTY(VisibleAnywhere)
 		UBoxComponent* TriggerVolumeBlue;
+	UPROPERTY(VisibleAnywhere)
+		UBoxComponent* ToggleSwitch;
+	UPROPERTY(replicated, VisibleAnywhere)
+		bool bTurnedOn;
 };
 
 int ALamp::NextID = 0;

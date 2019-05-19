@@ -32,14 +32,20 @@ public:
 	bool Set_bColorBlue_Validate(const int ID, const bool Value);
 
 	UFUNCTION(Server, Reliable, WithValidation)
+		void Set_bToggleSwitch(const int ID, const bool Value);
+	void Set_bToggleSwitch_Implementation(const int ID, const bool Value);
+	bool Set_bToggleSwitch_Validate(const int ID, const bool Value);
+
+	UFUNCTION(Server, Reliable, WithValidation)
 		void Set_bDestructibleObject(const int ID, const bool Value);
 	void Set_bDestructibleObject_Implementation(const int ID, const bool Value);
 	bool Set_bDestructibleObject_Validate(const int ID, const bool Value);
 
 	//get funtions
-	bool Get_bRed(const int ID);
-	bool Get_bGreen(const int ID);
-	bool Get_bBlue(const int ID);
+	int Get_bRed(const int ID);
+	int Get_bGreen(const int ID);
+	int Get_bBlue(const int ID);
+	bool Get_bToggleSwitch(const int ID);
 	bool Get_bIsIsDestroyed(const int ID);
 
 private:

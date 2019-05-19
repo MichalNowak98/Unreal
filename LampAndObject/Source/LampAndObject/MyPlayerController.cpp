@@ -49,7 +49,18 @@ bool AMyPlayerController::Set_bColorBlue_Validate(const int ID, const bool Value
 	return true;
 }
 
+void AMyPlayerController::Set_bToggleSwitch_Implementation(const int ID, const bool Value)
+{
+	if (GameState)
+	{
+		GameState->Set_bToggleSwitch_Implementation(ID, Value);
+	}
+}
 
+bool AMyPlayerController::Set_bToggleSwitch_Validate(const int ID, const bool Value)
+{
+	return true;
+}
 
 void AMyPlayerController::Set_bDestructibleObject_Implementation(const int ID, const bool Value)
 {
@@ -64,7 +75,9 @@ bool AMyPlayerController::Set_bDestructibleObject_Validate(const int ID, const b
 	return true;
 }
 
-bool AMyPlayerController::Get_bRed(const int ID)
+
+
+int AMyPlayerController::Get_bRed(const int ID)
 {
 	if (GameState)
 	{
@@ -74,7 +87,7 @@ bool AMyPlayerController::Get_bRed(const int ID)
 		return false;
 }
 
-bool AMyPlayerController::Get_bGreen(const int ID)
+int AMyPlayerController::Get_bGreen(const int ID)
 {
 	if (GameState)
 	{
@@ -84,7 +97,7 @@ bool AMyPlayerController::Get_bGreen(const int ID)
 		return false;
 }
 
-bool AMyPlayerController::Get_bBlue(const int ID)
+int AMyPlayerController::Get_bBlue(const int ID)
 {
 	if (GameState)
 	{
@@ -94,6 +107,16 @@ bool AMyPlayerController::Get_bBlue(const int ID)
 		return false;
 }
 
+
+bool AMyPlayerController::Get_bToggleSwitch(const int ID)
+{
+	if (GameState)
+	{
+		return GameState->Get_bToggleSwitch(ID);
+	}
+	else
+		return true;
+}
 bool AMyPlayerController::Get_bIsIsDestroyed(const int ID)
 {
 	if (GameState)

@@ -17,9 +17,13 @@ ALamp::ALamp(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializ
 	TriggerVolumeRed = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component Red"));
 	TriggerVolumeGreen = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component Green"));
 	TriggerVolumeBlue = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component Blue"));
+	ToggleSwitch = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Component ToggleSwitch"));
 	TriggerVolumeRed->SetupAttachment(LightSource);
 	TriggerVolumeGreen->SetupAttachment(LightSource);
 	TriggerVolumeBlue->SetupAttachment(LightSource);
+	ToggleSwitch->SetupAttachment(LightSource);
+
+	bTurnedOn = true;
 
 	if (LightSource)
 	{
@@ -32,6 +36,7 @@ void ALamp::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeP
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ALamp, ID);
+	DOREPLIFETIME(ALamp, bTurnedOn);
 }
 
 void ALamp::TriggerRedOn(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -82,6 +87,27 @@ void ALamp::TriggerBlueOff(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	}
 }
 
+void ALamp::ToggleSwitchCallback(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == Player)
+	{
+		if (bTurnedOn)
+		{
+			bTurnedOn = false;
+			if (PlayerController)
+				PlayerController->Set_bToggleSwitch(ID, false);
+			UE_LOG(LogTemp, Warning, TEXT("server turns off"));
+		}
+		else
+		{
+			bTurnedOn = true;
+			UE_LOG(LogTemp, Warning, TEXT("server turns on"));
+			if (PlayerController)
+				PlayerController->Set_bToggleSwitch(ID, true);
+		}
+	}
+}
+
 // Called when the game starts or when spawned
 void ALamp::BeginPlay()
 {
@@ -99,6 +125,7 @@ void ALamp::BeginPlay()
 	TriggerVolumeRed->OnComponentEndOverlap.AddDynamic(this, &ALamp::TriggerRedOff);
 	TriggerVolumeGreen->OnComponentEndOverlap.AddDynamic(this, &ALamp::TriggerGreenOff);
 	TriggerVolumeBlue->OnComponentEndOverlap.AddDynamic(this, &ALamp::TriggerBlueOff);
+	ToggleSwitch->OnComponentBeginOverlap.AddDynamic(this, &ALamp::ALamp::ToggleSwitchCallback);
 }
 
 // Called every frame
@@ -108,23 +135,37 @@ void ALamp::Tick(float DeltaTime)
 	if (HasAuthority())
 	{
 		//only server need this variables
-		int CountRed = 0;
-		int CountGreen = 0;
-		int CountBlue = 0;
+		//int CountRed = 0;
+		//int CountGreen = 0;
+		//int CountBlue = 0;
+		//if lamp has been toggled in this iteration
+		//bool bToggledLamp = false;
 		FLinearColor Color;
 
-		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-		{
-			if (Iterator->IsValid())
-			{
-				AMyPlayerController* temp = Cast<AMyPlayerController>(Iterator->Get());
-				CountRed += temp->Get_bRed(ID);
-				CountGreen += temp->Get_bGreen(ID);
-				CountBlue += temp->Get_bBlue(ID);
-			}
-		}
+		//for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		//{
+		//	AMyPlayerController* tempPlayerController = Cast<AMyPlayerController>(Iterator->Get());
+		//	if (tempPlayerController)
+		//	{
+		//		//CountRed += tempPlayerController->Get_bRed(ID);
+		//		//CountGreen += tempPlayerController->Get_bGreen(ID);
+		//		//CountBlue += tempPlayerController->Get_bBlue(ID);
+		//		if (!bToggledLamp && bTurnedOn && !tempPlayerController->Get_bToggleSwitch(ID))
+		//		{
+		//			bTurnedOn = false;
+		//			bToggledLamp = true;
+		//			UE_LOG(LogTemp, Warning, TEXT("turned off on server"));
+		//		}
+		//		else if (!bToggledLamp && !bTurnedOn && tempPlayerController->Get_bToggleSwitch(ID))
+		//		{
+		//			bTurnedOn = true;
+		//			bToggledLamp = true;
+		//			UE_LOG(LogTemp, Warning, TEXT("turned on on server"));
+		//		}
+		//	}
+		//}
 		//if Count is bigger then zero, set 1 in according channel
-		if (CountRed > 0)
+		/*if (CountRed > 0)
 			Color_on(EColor::Red, Color);
 		else
 			Color_off(EColor::Red, Color);
@@ -135,8 +176,38 @@ void ALamp::Tick(float DeltaTime)
 		if (CountBlue > 0)
 			Color_on(EColor::Blue, Color);
 		else
-			Color_off(EColor::Blue, Color);
+			Color_off(EColor::Blue, Color);*/
+		if (PlayerController && PlayerController->Get_bRed(ID) > 0)
+		{
+			Color_on(EColor::Red, Color);
+		}
+		else
+		{
+			if (PlayerController)
+				Color_off(EColor::Red, Color);
+		}
+		if (PlayerController && PlayerController->Get_bGreen(ID) > 0)
+		{
+			Color_on(EColor::Green, Color);
+		}
+		else
+		{
+			if (PlayerController)
+				Color_off(EColor::Green, Color);
+		}
+		if (PlayerController && PlayerController->Get_bBlue(ID) > 0)
+		{
+			Color_on(EColor::Blue, Color);
+		}
+		else
+		{
+			if (PlayerController)
+				Color_off(EColor::Blue, Color);
+		}
 		SetLightColor(Color);
+
+		bTurnedOn = PlayerController->Get_bToggleSwitch(ID);
+		ToggleLamp();
 	}
 }
 
@@ -194,4 +265,24 @@ void ALamp::Color_off(EColor Ecolor, FLinearColor& Color)
 void ALamp::SetLightColor_Implementation(const FLinearColor& Color)
 {
 	LightSource->SetLightColor(Color);
+}
+
+void ALamp::ToggleLamp_Implementation()
+{
+	if (bTurnedOn)
+	{
+		LightSource->SetIntensity(5000);
+	}
+	else
+	{
+		if (HasAuthority())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("S off"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("C off"));
+		}
+		LightSource->SetIntensity(0);
+	}
 }
