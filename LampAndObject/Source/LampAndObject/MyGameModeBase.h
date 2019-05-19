@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "MyPlayerController.h"
+#include "MyGameStateBase.h"
 #include "MyGameModeBase.generated.h"
 
 /**

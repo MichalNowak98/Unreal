@@ -5,4 +5,5 @@
 AMyGameModeBase::AMyGameModeBase() : AGameModeBase()
 {
 	PlayerControllerClass = AMyPlayerController::StaticClass();
+	GameStateClass = AMyGameStateBase::StaticClass();
 }

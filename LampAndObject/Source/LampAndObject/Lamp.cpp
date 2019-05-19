@@ -189,7 +189,6 @@ void ALamp::Color_off(EColor Ecolor, FLinearColor& Color)
 	}
 	default: {}
 	}
-
 }
 
 void ALamp::SetLightColor_Implementation(const FLinearColor& Color)
