@@ -142,58 +142,52 @@ void ALamp::Tick(float DeltaTime)
 
 void ALamp::Color_on(EColor Ecolor, FLinearColor& Color)
 {
-	if (Player)
+	switch (Ecolor)
 	{
-		switch (Ecolor)
-		{
-		case EColor::White:
-		{
-			Color.R = Color.G = Color.B = 1;
-			break;
-		}
-		case EColor::Red:
-		{
-			Color.R = 1;
-			break;
-		}
-		case EColor::Green:
-		{
-			Color.G = 1;
-			break;
-		}
-		case EColor::Blue:
-		{
-			Color.B = 1;
-			break;
-		}
-		default: {}
-		}
+	case EColor::White:
+	{
+		Color.R = Color.G = Color.B = 1;
+		break;
+	}
+	case EColor::Red:
+	{
+		Color.R = 1;
+		break;
+	}
+	case EColor::Green:
+	{
+		Color.G = 1;
+		break;
+	}
+	case EColor::Blue:
+	{
+		Color.B = 1;
+		break;
+	}
+	default: {}
 	}
 }
 
 void ALamp::Color_off(EColor Ecolor, FLinearColor& Color)
 {
-	if (Player)
+	switch (Ecolor)
 	{
-		switch (Ecolor)
-		{
-		case EColor::Red:
-		{
-			Color.R = 0;
-			break;
-		}
-		case EColor::Green:
-		{
-			Color.G = 0;
-			break;
-		}
-		case EColor::Blue:
-		{
-			Color.B = 0;
-			break;
-		}
-		default: {}
-		}
+	case EColor::Red:
+	{
+		Color.R = 0;
+		break;
+	}
+	case EColor::Green:
+	{
+		Color.G = 0;
+		break;
+	}
+	case EColor::Blue:
+	{
+		Color.B = 0;
+		break;
+	}
+	default: {}
 	}
 
 }
