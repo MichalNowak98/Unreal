@@ -134,49 +134,8 @@ void ALamp::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (HasAuthority())
 	{
-		//only server need this variables
-		//int CountRed = 0;
-		//int CountGreen = 0;
-		//int CountBlue = 0;
-		//if lamp has been toggled in this iteration
-		//bool bToggledLamp = false;
 		FLinearColor Color;
 
-		//for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-		//{
-		//	AMyPlayerController* tempPlayerController = Cast<AMyPlayerController>(Iterator->Get());
-		//	if (tempPlayerController)
-		//	{
-		//		//CountRed += tempPlayerController->Get_bRed(ID);
-		//		//CountGreen += tempPlayerController->Get_bGreen(ID);
-		//		//CountBlue += tempPlayerController->Get_bBlue(ID);
-		//		if (!bToggledLamp && bTurnedOn && !tempPlayerController->Get_bToggleSwitch(ID))
-		//		{
-		//			bTurnedOn = false;
-		//			bToggledLamp = true;
-		//			UE_LOG(LogTemp, Warning, TEXT("turned off on server"));
-		//		}
-		//		else if (!bToggledLamp && !bTurnedOn && tempPlayerController->Get_bToggleSwitch(ID))
-		//		{
-		//			bTurnedOn = true;
-		//			bToggledLamp = true;
-		//			UE_LOG(LogTemp, Warning, TEXT("turned on on server"));
-		//		}
-		//	}
-		//}
-		//if Count is bigger then zero, set 1 in according channel
-		/*if (CountRed > 0)
-			Color_on(EColor::Red, Color);
-		else
-			Color_off(EColor::Red, Color);
-		if (CountGreen > 0)
-			Color_on(EColor::Green, Color);
-		else
-			Color_off(EColor::Green, Color);
-		if (CountBlue > 0)
-			Color_on(EColor::Blue, Color);
-		else
-			Color_off(EColor::Blue, Color);*/
 		if (PlayerController && PlayerController->Get_bRed(ID) > 0)
 		{
 			Color_on(EColor::Red, Color);

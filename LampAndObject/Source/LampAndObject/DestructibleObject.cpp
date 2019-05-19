@@ -27,7 +27,6 @@ void ADestructibleObject::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ADestructibleObject, ID);
-	//DOREPLIFETIME(ADestructibleObject, IsDestroyed);
 	DOREPLIFETIME(ADestructibleObject, CurrentHealth); 
 	DOREPLIFETIME(ADestructibleObject, DestructorImpulseDir);
 }
@@ -63,23 +62,6 @@ void ADestructibleObject::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (HasAuthority())
 	{
-		//int CountOfDestroyedObject = 0;
-		//for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-		//{
-		//	if (Iterator->IsValid())
-		//	{
-		//		AMyPlayerController* temp = Cast<AMyPlayerController>(Iterator->Get());
-		//		CountOfDestroyedObject += temp->Get_bIsIsDestroyed(ID);
-		//		if (temp->Get_bIsIsDestroyed(ID))
-		//		{	//direction of destructor. Every Client gets similar explosion
-		//			DestructorImpulseDir = temp->GetPawn()->GetActorForwardVector();
-		//		}
-		//	}
-		//}
-		//if (CountOfDestroyedObject > 0)
-		//{
-		//	Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), DestructorImpulseDir, DefaultImpulse);
-		//}
 		if (PlayerController && PlayerController->Get_bIsIsDestroyed(ID) && !IsDestroyed)
 		{
 
