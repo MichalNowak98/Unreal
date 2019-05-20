@@ -3,7 +3,7 @@
 
 #include "MyGameStateBase.h"
 
-void AMyGameStateBase::Set_bColorRed_Implementation(const int ID, const bool Value)
+void AMyGameStateBase::SteppedOnColorRed_Implementation(const int ID, const bool Value)
 {
 	if (Lamps.Contains(ID))
 	{
@@ -26,12 +26,12 @@ void AMyGameStateBase::Set_bColorRed_Implementation(const int ID, const bool Val
 	}
 }
 
-bool AMyGameStateBase::Set_bColorRed_Validate(const int ID, const bool Value)
+bool AMyGameStateBase::SteppedOnColorRed_Validate(const int ID, const bool Value)
 {
 	return true;
 }
 
-void AMyGameStateBase::Set_bColorGreen_Implementation(const int ID, const bool Value)
+void AMyGameStateBase::SteppedOnColorGreen_Implementation(const int ID, const bool Value)
 {
 	if (Lamps.Contains(ID))
 	{
@@ -54,12 +54,12 @@ void AMyGameStateBase::Set_bColorGreen_Implementation(const int ID, const bool V
 	}
 }
 
-bool AMyGameStateBase::Set_bColorGreen_Validate(const int ID, const bool Value)
+bool AMyGameStateBase::SteppedOnColorGreen_Validate(const int ID, const bool Value)
 {
 	return true;
 }
 
-void AMyGameStateBase::Set_bColorBlue_Implementation(const int ID, const bool Value)
+void AMyGameStateBase::SteppedOnColorBlue_Implementation(const int ID, const bool Value)
 {
 	if (Lamps.Contains(ID))
 	{
@@ -82,7 +82,7 @@ void AMyGameStateBase::Set_bColorBlue_Implementation(const int ID, const bool Va
 	}
 }
 
-bool AMyGameStateBase::Set_bColorBlue_Validate(const int ID, const bool Value)
+bool AMyGameStateBase::SteppedOnColorBlue_Validate(const int ID, const bool Value)
 {
 	return true;
 }
@@ -125,7 +125,7 @@ bool AMyGameStateBase::Set_bDestructibleObject_Validate(const int ID, const bool
 	return true;
 }
 
-int AMyGameStateBase::Get_bRed(const int ID)
+int AMyGameStateBase::Get_CountRedOn(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{
@@ -137,7 +137,7 @@ int AMyGameStateBase::Get_bRed(const int ID)
 	}
 }
 
-int AMyGameStateBase::Get_bGreen(const int ID)
+int AMyGameStateBase::Get_CountGreenOn(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{
@@ -149,7 +149,7 @@ int AMyGameStateBase::Get_bGreen(const int ID)
 	}
 }
 
-int AMyGameStateBase::Get_bBlue(const int ID)
+int AMyGameStateBase::Get_CountBlueOn(const int ID)
 {
 	if (Lamps.Contains(ID))
 	{

@@ -43,7 +43,7 @@ void ALamp::TriggerRedOn(UPrimitiveComponent* OverlappedComponent, AActor* Other
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Set_bColorRed(ID, true);
+		PlayerController->SteppedOnColorRed(ID, true);
 	}
 }
 
@@ -51,7 +51,7 @@ void ALamp::TriggerGreenOn(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Set_bColorGreen(ID, true);
+		PlayerController->SteppedOnColorGreen(ID, true);
 	}
 }
 
@@ -59,7 +59,7 @@ void ALamp::TriggerBlueOn(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Set_bColorBlue(ID, true);
+		PlayerController->SteppedOnColorBlue(ID, true);
 	}
 }
 
@@ -67,7 +67,7 @@ void ALamp::TriggerRedOff(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Set_bColorRed(ID, false);
+		PlayerController->SteppedOnColorRed(ID, false);
 	}
 }
 
@@ -75,7 +75,7 @@ void ALamp::TriggerGreenOff(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Set_bColorGreen(ID, false);
+		PlayerController->SteppedOnColorGreen(ID, false);
 	}
 }
 
@@ -83,7 +83,7 @@ void ALamp::TriggerBlueOff(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (OtherActor == Player && PlayerController)
 	{
-		PlayerController->Set_bColorBlue(ID, false);
+		PlayerController->SteppedOnColorBlue(ID, false);
 	}
 }
 
@@ -96,12 +96,10 @@ void ALamp::ToggleSwitchCallback(UPrimitiveComponent* OverlappedComponent, AActo
 			bTurnedOn = false;
 			if (PlayerController)
 				PlayerController->Set_bToggleSwitch(ID, false);
-			UE_LOG(LogTemp, Warning, TEXT("server turns off"));
 		}
 		else
 		{
 			bTurnedOn = true;
-			UE_LOG(LogTemp, Warning, TEXT("server turns on"));
 			if (PlayerController)
 				PlayerController->Set_bToggleSwitch(ID, true);
 		}
@@ -136,7 +134,7 @@ void ALamp::Tick(float DeltaTime)
 	{
 		FLinearColor Color;
 
-		if (PlayerController && PlayerController->Get_bRed(ID) > 0)
+		if (PlayerController && PlayerController->Get_CountRedOn(ID) > 0)
 		{
 			Color_on(EColor::Red, Color);
 		}
@@ -145,7 +143,7 @@ void ALamp::Tick(float DeltaTime)
 			if (PlayerController)
 				Color_off(EColor::Red, Color);
 		}
-		if (PlayerController && PlayerController->Get_bGreen(ID) > 0)
+		if (PlayerController && PlayerController->Get_CountGreenOn(ID) > 0)
 		{
 			Color_on(EColor::Green, Color);
 		}
@@ -154,7 +152,7 @@ void ALamp::Tick(float DeltaTime)
 			if (PlayerController)
 				Color_off(EColor::Green, Color);
 		}
-		if (PlayerController && PlayerController->Get_bBlue(ID) > 0)
+		if (PlayerController && PlayerController->Get_CountBlueOn(ID) > 0)
 		{
 			Color_on(EColor::Blue, Color);
 		}
@@ -234,14 +232,6 @@ void ALamp::ToggleLamp_Implementation()
 	}
 	else
 	{
-		if (HasAuthority())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("S off"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("C off"));
-		}
 		LightSource->SetIntensity(0);
 	}
 }

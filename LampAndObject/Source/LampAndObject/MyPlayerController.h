@@ -17,19 +17,19 @@ public:
 
 	//server set funcions
 	UFUNCTION(Server, Reliable, WithValidation)
-		void Set_bColorRed(const int ID, const bool Value);
-	void Set_bColorRed_Implementation(const int ID, const bool Value);
-	bool Set_bColorRed_Validate(const int ID, const bool Value);
+		void SteppedOnColorRed(const int ID, const bool Value);
+	void SteppedOnColorRed_Implementation(const int ID, const bool Value);
+	bool SteppedOnColorRed_Validate(const int ID, const bool Value);
 
 	UFUNCTION(Server, Reliable, WithValidation)
-		void Set_bColorGreen(const int ID, const bool Value);
-	void Set_bColorGreen_Implementation(const int ID, const bool Value);
-	bool Set_bColorGreen_Validate(const int ID, const bool Value);
+		void SteppedOnColorGreen(const int ID, const bool Value);
+	void SteppedOnColorGreen_Implementation(const int ID, const bool Value);
+	bool SteppedOnColorGreen_Validate(const int ID, const bool Value);
 
 	UFUNCTION(Server, Reliable, WithValidation)
-		void Set_bColorBlue(const int ID, const bool Value);
-	void Set_bColorBlue_Implementation(const int ID, const bool Value);
-	bool Set_bColorBlue_Validate(const int ID, const bool Value);
+		void SteppedOnColorBlue(const int ID, const bool Value);
+	void SteppedOnColorBlue_Implementation(const int ID, const bool Value);
+	bool SteppedOnColorBlue_Validate(const int ID, const bool Value);
 
 	UFUNCTION(Server, Reliable, WithValidation)
 		void Set_bToggleSwitch(const int ID, const bool Value);
@@ -42,9 +42,9 @@ public:
 	bool Set_bDestructibleObject_Validate(const int ID, const bool Value);
 
 	//get funtions
-	int Get_bRed(const int ID);
-	int Get_bGreen(const int ID);
-	int Get_bBlue(const int ID);
+	int Get_CountRedOn(const int ID);
+	int Get_CountGreenOn(const int ID);
+	int Get_CountBlueOn(const int ID);
 	bool Get_bToggleSwitch(const int ID);
 	bool Get_bIsIsDestroyed(const int ID);
 

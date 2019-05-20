@@ -42,7 +42,6 @@ void ADestructibleObject::BeginPlay()
 	TriggerComponent->OnComponentBeginOverlap.AddDynamic(this, &ADestructibleObject::Trigger);
 	if (IsDestroyed)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Should be destoryed on start"));
 		Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), DestructorImpulseDir, DefaultImpulse);
 	}
 	else
@@ -64,7 +63,6 @@ void ADestructibleObject::Tick(float DeltaTime)
 	{
 		if (PlayerController && PlayerController->Get_bIsIsDestroyed(ID) && !IsDestroyed)
 		{
-
 			Destroy(DefaultDamage, DestructibleComponent->GetComponentLocation(), PlayerController->GetPawn()->GetActorForwardVector(), DefaultImpulse);
 		}
 	}

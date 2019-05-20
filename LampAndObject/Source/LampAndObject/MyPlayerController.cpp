@@ -10,41 +10,41 @@ AMyPlayerController::AMyPlayerController(const FObjectInitializer& ObjectInitial
 }
 
 
-void AMyPlayerController::Set_bColorRed_Implementation(const int ID, const bool Value)
+void AMyPlayerController::SteppedOnColorRed_Implementation(const int ID, const bool Value)
 {
 	if (GameState)
 	{
-		GameState->Set_bColorRed_Implementation(ID, Value);
+		GameState->SteppedOnColorRed_Implementation(ID, Value);
 	}
 }
 
-bool AMyPlayerController::Set_bColorRed_Validate(const int ID, const bool Value)
+bool AMyPlayerController::SteppedOnColorRed_Validate(const int ID, const bool Value)
 {
 	return true;
 }
 
-void AMyPlayerController::Set_bColorGreen_Implementation(const int ID, const bool Value)
+void AMyPlayerController::SteppedOnColorGreen_Implementation(const int ID, const bool Value)
 {
 	if (GameState)
 	{
-		GameState->Set_bColorGreen_Implementation(ID, Value);
+		GameState->SteppedOnColorGreen_Implementation(ID, Value);
 	}
 }
 
-bool AMyPlayerController::Set_bColorGreen_Validate(const int ID, const bool Value)
+bool AMyPlayerController::SteppedOnColorGreen_Validate(const int ID, const bool Value)
 {
 	return true;
 }
 
-void AMyPlayerController::Set_bColorBlue_Implementation(const int ID, const bool Value)
+void AMyPlayerController::SteppedOnColorBlue_Implementation(const int ID, const bool Value)
 {
 	if (GameState)
 	{
-		GameState->Set_bColorBlue_Implementation(ID, Value);
+		GameState->SteppedOnColorBlue_Implementation(ID, Value);
 	}
 }
 
-bool AMyPlayerController::Set_bColorBlue_Validate(const int ID, const bool Value)
+bool AMyPlayerController::SteppedOnColorBlue_Validate(const int ID, const bool Value)
 {
 	return true;
 }
@@ -77,31 +77,31 @@ bool AMyPlayerController::Set_bDestructibleObject_Validate(const int ID, const b
 
 
 
-int AMyPlayerController::Get_bRed(const int ID)
+int AMyPlayerController::Get_CountRedOn(const int ID)
 {
 	if (GameState)
 	{
-		return GameState->Get_bRed(ID);
+		return GameState->Get_CountRedOn(ID);
 	}
 	else
 		return false;
 }
 
-int AMyPlayerController::Get_bGreen(const int ID)
+int AMyPlayerController::Get_CountGreenOn(const int ID)
 {
 	if (GameState)
 	{
-		return GameState->Get_bGreen(ID);
+		return GameState->Get_CountGreenOn(ID);
 	}
 	else
 		return false;
 }
 
-int AMyPlayerController::Get_bBlue(const int ID)
+int AMyPlayerController::Get_CountBlueOn(const int ID)
 {
 	if (GameState)
 	{
-		return GameState->Get_bBlue(ID);
+		return GameState->Get_CountBlueOn(ID);
 	}
 	else
 		return false;
